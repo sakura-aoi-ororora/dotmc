@@ -1,3 +1,9 @@
+//todo: 進捗、ルートテーブル、その他諸々の追加
+pub struct Datapack {
+    pub function: Option<Box<Function>>,
+}
+
+//todo: コマンドの追加
 /// コマンドを表す列挙型
 pub enum Commands {
     Say(String),
@@ -5,9 +11,9 @@ pub enum Commands {
 
 /// data/functionの中身を表す
 pub struct Function {
-    load: Option<Vec<Commands>>,
-    tick: Option<Vec<Commands>>,
-    other: Vec<File>,
+    pub load: Option<Vec<Commands>>,
+    pub tick: Option<Vec<Commands>>,
+    pub other: Vec<File>,
 }
 
 impl Function {
@@ -28,8 +34,8 @@ pub enum File {
 
 /// 普通のmcfunctionを表す
 pub struct FuncFile {
-    name: String,
-    data: Vec<Commands>,
+    pub name: String,
+    pub data: Vec<Commands>,
 }
 
 impl FuncFile {
@@ -40,12 +46,12 @@ impl FuncFile {
 }
 
 pub struct Directory {
-    name: String,
-    data: Vec<FuncFile>,
+    pub name: String,
+    pub data: Vec<FuncFile>,
 }
 
 impl Directory {
-    /// 新しくmcfunctionを作り、データを返す
+    /// 新しくDirectoryを作り、データを返す
     pub fn new(name: String, data: Vec<FuncFile>) -> Directory {
         Directory { name, data }
     }

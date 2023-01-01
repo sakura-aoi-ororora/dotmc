@@ -3,5 +3,12 @@
 version = 3
 
 [[package]]
-name = "dotmc"
+name = "dotmc_cil"
+version = "0.1.0"
+dependencies = [
+ "dotmc_lib",
+]
+
+[[package]]
+name = "dotmc_lib"
 version = "0.1.0"

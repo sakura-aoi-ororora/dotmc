@@ -4,10 +4,8 @@ pub struct Datapack {
 }
 
 impl Datapack {
-    pub fn new(func: Option<Box<Function>>) -> Datapack{
-        Datapack{
-            function:func
-        }
+    pub fn new(func: Option<Box<Function>>) -> Datapack {
+        Datapack { function: func }
     }
 }
 
@@ -55,12 +53,12 @@ impl FuncFile {
 
 pub struct Directory {
     pub name: String,
-    pub data: Vec<FuncFile>,
+    pub data: Vec<File>,
 }
 
 impl Directory {
     /// 新しくDirectoryを作り、データを返す
-    pub fn new(name: String, data: Vec<FuncFile>) -> Directory {
+    pub fn new(name: String, data: Vec<File>) -> Directory {
         Directory { name, data }
     }
 }

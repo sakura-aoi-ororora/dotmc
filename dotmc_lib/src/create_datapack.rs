@@ -1,6 +1,6 @@
 use crate::create_mcfunction::create_function_vec;
-use crate::func::{Commands, Datapack, FuncFile, Function};
-use std::fs::{create_dir, read_to_string, remove_dir_all, File};
+use crate::func::{Commands, Datapack, Directory, File as fFile, FuncFile, Function};
+use std::fs::{create_dir, remove_dir_all, File};
 use std::io::Write;
 use std::path::Path;
 
@@ -124,6 +124,36 @@ pub fn create_datapack(datapack: Datapack, path: &str, name: &str) {
                 }
             }
         }
+
+        //その他のファンクションの生成
+        let others = b.other;
+        for o in others {
+            match o {
+                fFile::Function(f) => generate_func(f, &name_function_path),
+                fFile::Directory(d) => generate_dir(d, &name_function_path),
+            }
+        }
+    }
+}
+
+fn generate_func(func: FuncFile, target_func_path: &String) {
+    let path = format!(r"{}\{}.mcfunction", target_func_path, func.name);
+    let data = create_function_vec(func.data);
+    create_file_mine(&path, &data);
+}
+
+fn generate_dir(dir: Directory, target_dir_path: &String) {
+    let path = format!(r"{}\{}", target_dir_path, dir.name);
+    create_dir_mine(&path);
+    for datum in dir.data {
+        generate_file(datum, &path)
+    }
+}
+
+fn generate_file(file: fFile, target_file_path: &String) {
+    match file {
+        fFile::Function(f) => generate_func(f, target_file_path),
+        fFile::Directory(d) => generate_dir(d, target_file_path),
     }
 }
 
@@ -152,10 +182,12 @@ fn test() {
         Commands::Say("load".to_string()),
         Commands::Say("hello".to_string()),
     ];
+
     let tick = vec![
         Commands::Say("hello".to_string()),
         Commands::Say("tick".to_string()),
     ];
+
     let other = FuncFile::new(
         "test".to_string(),
         vec![
@@ -163,13 +195,41 @@ fn test() {
             Commands::Say("other".to_string()),
         ],
     );
+
+    let other_dir = Directory::new(
+        "test_dir".to_string(),
+        vec![
+            fFile::Function(FuncFile::new(
+                "test".to_string(),
+                vec![
+                    Commands::Say("hello".to_string()),
+                    Commands::Say("other".to_string()),
+                ],
+            )),
+            fFile::Directory(Directory::new(
+                "test_dir_second".to_string(),
+                vec![fFile::Function(FuncFile::new(
+                    "test".to_string(),
+                    vec![
+                        Commands::Say("hello".to_string()),
+                        Commands::Say("other".to_string()),
+                    ],
+                ))],
+            )),
+        ],
+    );
+
     let func = Function::new(
         Some(load),
         Some(tick),
-        vec![crate::func::File::Function(other)],
+        vec![
+            crate::func::File::Function(other),
+            fFile::Directory(other_dir),
+        ],
     );
+
     let pack = Datapack::new(Some(func));
-    let path = r""; //変更する
+    let path = r"C:\Users\karin\Desktop\Text"; //変更する
     create_datapack(pack, path, "test_gen")
 }
 

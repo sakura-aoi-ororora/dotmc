@@ -3,6 +3,14 @@ pub struct Datapack {
     pub function: Option<Box<Function>>,
 }
 
+impl Datapack {
+    pub fn new(func: Option<Box<Function>>) -> Datapack{
+        Datapack{
+            function:func
+        }
+    }
+}
+
 //todo: コマンドの追加
 /// コマンドを表す列挙型
 pub enum Commands {
